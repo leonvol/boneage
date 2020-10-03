@@ -37,13 +37,13 @@ def get_train_transform(patch_size):
             border_mode_seg='constant', border_cval_seg=0,
             order_seg=1,
             random_crop=False,
-            p_el_per_sample=0.1, p_rot_per_sample=0.1, p_scale_per_sample=0.1,
+            p_el_per_sample=0.2, p_rot_per_sample=0.2, p_scale_per_sample=0.2,
         )
     )
 
     train_transforms.append(MirrorTransform(axes=(0, 1)))
 
-    train_transforms.append(BrightnessMultiplicativeTransform((0.7, 1.5), per_channel=True, p_per_sample=0.15))
+    train_transforms.append(BrightnessMultiplicativeTransform((0.7, 1.5), per_channel=True, p_per_sample=0.2))
 
     train_transforms.append(GammaTransform(gamma_range=(0.2, 1.0), invert_image=False, per_channel=False,
                                            p_per_sample=0.2))
@@ -51,7 +51,7 @@ def get_train_transform(patch_size):
     train_transforms.append(GaussianNoiseTransform(noise_variance=(0, 0.05), p_per_sample=0.2))
 
     train_transforms.append(GaussianBlurTransform(blur_sigma=(0.2, 1.0), different_sigma_per_channel=False,
-                                                  p_per_channel=0.0, p_per_sample=0.15))
+                                                  p_per_channel=0.0, p_per_sample=0.2))
 
     return Compose(train_transforms)
 
@@ -80,7 +80,7 @@ def get_valid_transform(patch_size):
             border_mode_seg='constant', border_cval_seg=0,
             order_seg=1, order_data=3,
             random_crop=True,
-            p_el_per_sample=0, p_rot_per_sample=0, p_scale_per_sample=0
+            p_el_per_sample=0.1, p_rot_per_sample=0.1, p_scale_per_sample=0.1
         )
     )
 
