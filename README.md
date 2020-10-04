@@ -1,4 +1,4 @@
-<p align="center"><img src="https://raw.githubusercontent.com/leonvol/bwki-boneage-experiments/master/imgs/logo.png" alt="BoneAge"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/leonvol/bwki-boneage-experiments/main/imgs/logo.png" alt="BoneAge"></p>
 
 # bwki-boneage-experiments
 Experiments and submission code of project 'BoneAge' for competition BWKI
