@@ -50,3 +50,6 @@ predict(ct, nrrd, preprocessing, output_reshape, weights, dims)
 *Modifiziert, ohne Pooling nach dem 4. Block um 5. Convolutional Block durchführen zu können
 
 **Vortrainiert auf RSNA Bone Age, Quelle: https://www.kaggle.com/kmader/attention-on-pretrained-vgg16-for-bone-age
+
+Die besten Modelle der einzelnen Netzstrukturen sind zu finden unter: https://drive.google.com/drive/folders/1ax7hesbNFF8awU1AiC-yM3L72oZdFj6l?usp=sharing
+
