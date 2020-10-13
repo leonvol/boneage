@@ -5,6 +5,7 @@ Experiments and submission code of project 'BoneAge' for competition BWKI
 
 ## Projekt
 Das Projekt "BoneAge" löst das Problem der Alterserkennung einer Person anhand von CT-Aufnahmen des Schlüsselbeins.
+
 **Einladung zum Bundesfinale**
 
 ## Übersicht
