@@ -55,3 +55,6 @@ predict(ct, nrrd, preprocessing, output_reshape, weights, dims)
 
 Die besten Modelle der einzelnen Netzstrukturen sind zu finden unter: https://drive.google.com/drive/folders/1ax7hesbNFF8awU1AiC-yM3L72oZdFj6l?usp=sharing
 
+## Danksagung
+LMU für den Datensatz
+@pwesp für die grundlegende 3D Netzstruktur, welche wir abänderten
