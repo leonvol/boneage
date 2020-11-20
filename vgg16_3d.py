@@ -101,6 +101,7 @@ data_paths = get_data_list(data_path)
 kf = KFold(8, True)
 count = 0
 for train_paths, test_paths in kf.split(data_paths):
+    model.set_weights(start_weights)
     print('Start training ' + str(count))
     # convert from indices to actual paths, TODO change to use indices
     train_paths = _assemble_paths(data_paths, train_paths)
@@ -113,6 +114,7 @@ for train_paths, test_paths in kf.split(data_paths):
     mae = calculate_test_mae(model, optimizer, 'mae', 4, patch_size, preprocessing, output_reshape, test_paths)
     test_maes.append(mae)
     print('Finished testing ' + str(count) + ' with a mae of: ' + str(mae))
+    model.save_weights('models/vgg16_3d_kf{}'.format(count))
     count += 1
 print('test maes', test_maes)
 print('training paths', train_paths_)
