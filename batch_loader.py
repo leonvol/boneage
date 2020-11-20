@@ -182,7 +182,7 @@ class KerasGenerator(keras.utils.Sequence):
 
 
 def get_generators(patch_size, batch_size, preprocess_func, output_reshape_func, num_validation, train_processes,
-                   train_cache, train_data_dir='data/train/'):
+                   train_cache, dirs):
     """
     Creates augmented batch loaders and generators for Keras for training and validation
     :param patch_size: input of network without batch_size dimension
@@ -194,7 +194,7 @@ def get_generators(patch_size, batch_size, preprocess_func, output_reshape_func,
     :param  train_cache: number of augmented samples to cache
     """
 
-    dirs = util.get_data_list(train_data_dir)
+    # dirs = util.get_data_list(train_data_dir)
     labels = util.parse_labels_months()
     train_paths, validation_paths = util.train_validation_split(dirs, labels)
     # generate train batch loader
@@ -220,7 +220,7 @@ def get_generators(patch_size, batch_size, preprocess_func, output_reshape_func,
     return train_generator_keras, valid_generator_keras
 
 
-def get_test_generator(patch_size, batch_size, preprocess_func, output_reshape_func, test_data_dir='data/test/'):
+def get_test_generator(patch_size, batch_size, preprocess_func, output_reshape_func, test_paths):
     """
     Creates un-augmented data generator/loader for testing data
     Especially useful if testing data does not fit into memory
@@ -229,8 +229,6 @@ def get_test_generator(patch_size, batch_size, preprocess_func, output_reshape_f
     :param preprocess_func: callable to preprocess data per sample
     :param output_reshape_func: callable to reshape preprocessed and augmented data per sample
     """
-
-    test_paths = util.get_data_list(test_data_dir)
 
     # generate train batch loader
     test_data_loader = CTBatchLoader(test_paths, batch_size, patch_size, num_threads_in_multithreaded=1,
