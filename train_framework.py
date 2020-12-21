@@ -69,5 +69,5 @@ def calculate_test_mae(model: Model, optimizer, loss, batch_size, patch_size, pr
     :param output_reshape_func: callable to reshape output to fit into the network
     """
     model.compile(optimizer, loss)
-    test_generator = get_test_generator(patch_size, batch_size, preprocessing_func, output_reshape_func, paths)
+    test_generator = get_test_generator(patch_size, batch_size, preprocessing_func, output_reshape_func)
     return model.evaluate(test_generator, max_queue_size=0, steps=int(56 / batch_size), verbose=1)
