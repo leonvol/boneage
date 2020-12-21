@@ -9,7 +9,7 @@ from clr_callback import CyclicLR
 
 def train(model: Model, optimizer: Optimizer, epochs: int, batch_size: int, patch_size: tuple, num_validation: int,
           name: str, loss: str, preprocessing_func, output_reshape_func, training_generator_threads,
-          training_sample_cache, train_paths, load_path=None):
+          training_sample_cache, load_path=None):
     """
     Universal method to make training of different networks with different input_sizes easier and to minimize code duplication
     :param model: tf.keras model instance
@@ -39,23 +39,22 @@ def train(model: Model, optimizer: Optimizer, epochs: int, batch_size: int, patc
 
     clr = CyclicLR(base_lr=0.001, max_lr=0.01, step_size=2000.)
     tensorboard = keras.callbacks.TensorBoard(log_dir='./graphs/{}/graph'.format(name), histogram_freq=0,
-                                              write_graph=True, write_images=True)
+                                                write_graph=True, write_images=True)
     es = keras.callbacks.EarlyStopping(monitor='val_loss', mode='auto', patience=200, verbose=1)
     callbacks = [checkpointing, clr, tensorboard, es]
 
     train_generator, validation_generator = get_generators(patch_size, batch_size, preprocessing_func,
-                                                           output_reshape_func, num_validation,
-                                                           training_generator_threads, training_sample_cache,
-                                                           train_paths)
+                                                            output_reshape_func, num_validation,
+                                                            training_generator_threads, training_sample_cache)
 
     hist = model.fit(train_generator, epochs=epochs, callbacks=callbacks,
-                     validation_data=validation_generator,
-                     max_queue_size=0)
+                        validation_data=validation_generator,
+                        max_queue_size=0)
     model.save_weights('models/{}/final'.format(name))
     return hist
 
 
-def calculate_test_mae(model: Model, optimizer, loss, batch_size, patch_size, preprocessing_func, output_reshape_func, paths):
+def calculate_test_mae(model: Model, optimizer, loss, batch_size, patch_size, preprocessing_func, output_reshape_func):
     """
     Calculates mae on test set
     Creates data generator to load testing data on demand
@@ -70,4 +69,4 @@ def calculate_test_mae(model: Model, optimizer, loss, batch_size, patch_size, pr
     """
     model.compile(optimizer, loss)
     test_generator = get_test_generator(patch_size, batch_size, preprocessing_func, output_reshape_func)
-    return model.evaluate(test_generator, max_queue_size=0, steps=int(56 / batch_size), verbose=1)
+    model.evaluate(test_generator, max_queue_size=0, steps=int(56 / batch_size), verbose=1)

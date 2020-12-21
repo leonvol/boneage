@@ -1,10 +1,9 @@
 import numpy as np
 from keras import layers, models
 from tensorflow import keras
-from util import get_data_list
+
 from preprocessing import value_preprocessing
 from train_framework import train, calculate_test_mae
-from sklearn.model_selection import KFold
 
 
 def create_vgg16_3d(dense=False, batch_norm=True, weights=None, input_shape=(260, 100, 15, 1)):
@@ -78,42 +77,11 @@ def output_reshape(ct):
     return np.moveaxis(ct, 1, -1)
 
 
-def _assemble_paths(paths, indices):
-    return [paths[i] for i in indices]
-
-
-name = 'vgg16_3d'
+name = 'vgg16_3d_bn_better0.1'
 patch_size = (260, 100, 15)
 model = create_vgg16_3d(dense=True)
-start_weights = model.get_weights()
 optimizer = keras.optimizers.Adam(0.01, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
-
-# cross validation
-# final test maes for each cross validation iteration
-test_maes = []
-# training paths for each cross validation iteration
-train_paths_ = []
-# test paths for each cross validation iteration
-test_paths_ = []
-data_path = 'data/data/'
-data_paths = get_data_list(data_path)
-
-kf = KFold(8, True)
-count = 0
-for train_paths, test_paths in kf.split(data_paths):
-    print('Start training ' + str(count))
-    # convert from indices to actual paths, TODO change to use indices
-    train_paths = _assemble_paths(data_paths, train_paths)
-    test_paths = _assemble_paths(data_paths, test_paths)
-    train_paths_.append(train_paths)
-    test_paths_.append(test_paths)
-    train(model, optimizer, epochs=500, batch_size=32, patch_size=patch_size, num_validation=32, name=name, loss='mae',
-          preprocessing_func=preprocessing, output_reshape_func=output_reshape, training_generator_threads=6,
-          training_sample_cache=16, train_paths=train_paths)
-    mae = calculate_test_mae(model, optimizer, 'mae', 4, patch_size, preprocessing, output_reshape, test_paths)
-    test_maes.append(mae)
-    print('Finished testing ' + str(count) + ' with a mae of: ' + str(mae))
-    count += 1
-print('test maes', test_maes)
-print('training paths', train_paths_)
-print('testing paths', test_paths_)
+train(model, optimizer, epochs=1000, batch_size=32, patch_size=patch_size, num_validation=32, name=name, loss='mae',
+      preprocessing_func=preprocessing, output_reshape_func=output_reshape, training_generator_threads=6,
+      training_sample_cache=16)
+calculate_test_mae(model, optimizer, 'mae', 4, patch_size, preprocessing, output_reshape)
