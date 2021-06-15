@@ -1,46 +1,33 @@
 <p align="center"><img src="https://raw.githubusercontent.com/leonvol/bwki-boneage-experiments/main/imgs/logo.png" alt="BoneAge"></p>
 
-# bwki-boneage-experiments
-Experiments and submission code of project 'BoneAge' for competition BWKI
+This project is the world's first AI system to determine a person's age by analyzing 3D low-dose thorax CT images of the clavicle. It has higher accuracy and a wider age detection range than more traditional hand bone age assessment and is much faster than estimates of trained radiologists.
 
-## Projekt
-Das Projekt "BoneAge" löst das Problem der Alterserkennung einer Person anhand von CT-Aufnahmen des Schlüsselbeins.
+&rarr; Invitation to 2020's nationwide final, placed TOP 5
 
-**Einladung zum Bundesfinale**
-
-## Übersicht
-| Modul Name                 | Aufgabe                                                                                           |
+## Code structure overview
+| module name                | function                                                                                          |
 |----------------------------|---------------------------------------------------------------------------------------------------|
-| batch_loader               | Schnelles und parallelisiertes Laden, Preprocessen, Augmenten und Cachen von CT Bildern           |
-| train_framework            | Simples trainieren und vergleichen verschiedener Netzstrukturen                                   |
-| preprocessing              | Helper zum Preprocessen der 3d Daten                                                              |
-| util                       | Allgemeine Helper                                                                                 |
-| vgg16_3d                   | Implementation einer 3d VGG16 Netzstruktur, sowie Trainingscode                                   |
-| vgg16_attention_pretrained | Integration eines vortrainierten VGG16 Netzwerkes, in ein 3d Modell, sowie Trainingscode          |
-| alexnet_3d                 | Implementation einer 3d Alexnet Netzstruktur, sowie Trainigscode                                  |
-| convert_crop               | Code zum automatischen Konvertieren und Zuschneiden der DICOM Dateien                             |
-| clr_callback               | Cyclic Learning Rate Keras Callback                                                               |
-| predict                    | Einfache Prediction für nicht-segmentierte CT-Aufnahmen                                           |
+| batch_loader               | fast, parallelized loading, processing, augmenting and caching of CT images                       |
+| train_framework            | framework to train and compare the performance of different net structures                        |
+| vgg16_3d                   | implementation of a 3D VGG16 Net                                                                  |
+| vgg16_attention_pretrained | pretrained 3D VGG16 Net with attention                                                            |
+| alexnet_3d                 | implementation of a 3D Alexnet                                                                    |
+| convert_crop               | automatically crop and convert DICOM data with segmentation point                                 |
+| preprocessing              | helper functions for preprocessing                                                                |
+| util                       | general helper functions                                                                          |
+| clr_callback               | cyclic learning rate callback for keras                                                           |
+| predict                    | prediction of not yet segmented CT images                                                         |
 
 ## Installation 
-Erstellung eines neuen pipenv und Installation der benötigten packages durch
+Installation of all needed dependencies by running
 ```bash
 pip install -r requirements.txt
 ```
 
-## Prediction
-Beispielscode zum Vorhersagen des Knochenalters einer CT-Aufnahme mit Segmentation, am Ende von `predict.py`
-```python
-from vgg16_3d import preprocessing, output_reshape # Importieren der gewünschten Netzstruktur und der zugehörigen Funktionen
-ct = 'data/sample/' # Directory der dicom-Dateien
-nrrd = 'data/sample.nrrd' # Pfad zur Segmentierungsdatei
-weights = 'models/vgg16_3d/best' # Pfad zu den Dateien der Netzgewichte
-dims = (130, 100, 15) # Dimensionen des Ausschnitts, sollte zur Verwendung mit dem vortrainierten Modellen (130, 100, 15) sein
-predict(ct, nrrd, preprocessing, output_reshape, weights, dims)
-```
+## Results
+The best models can be downloaded from [Google Drive](https://drive.google.com/drive/folders/1ax7hesbNFF8awU1AiC-yM3L72oZdFj6l?usp=sharing)
 
-## Ergebnisse
-|   | Netzwerkstruktur                                           | Learning Rate     | Test-Set MAE in Monaten |
+|   | neural net structure                                       | learning rate     | Test-Set MAE in months |
 |---|------------------------------------------------------------|-------------------|-------------------------|
 | 1 | 3D VGG16, BN, 3 Dense*                                     | CLR [0.01, 0.001] | 23.14                   |
 | 2 | 3D AlexNet, 4 Conv Layers, BN, 3 Dense                     | CLR [0.01, 0.001] | 23.76                   |
@@ -49,12 +36,9 @@ predict(ct, nrrd, preprocessing, output_reshape, weights, dims)
 | 5 | VGG16 Attention**, GlobalMaxPooling                        | CLR [0.1, 0.01]   | 32.43                   |
 | ...                                                                                                          |
 
-*Modifiziert, ohne Pooling nach dem 4. Block um 5. Convolutional Block durchführen zu können
+*modified, without pooling after the 4th block to allow for convolutions in the 5th block
 
-**Vortrainiert auf RSNA Bone Age, Quelle: https://www.kaggle.com/kmader/attention-on-pretrained-vgg16-for-bone-age
+**pretrained on RSNA Bone Age from [kaggle](https://www.kaggle.com/kmader/attention-on-pretrained-vgg16-for-bone-age)
 
-Die besten Modelle der einzelnen Netzstrukturen sind zu finden unter: https://drive.google.com/drive/folders/1ax7hesbNFF8awU1AiC-yM3L72oZdFj6l?usp=sharing
-
-## Danksagung
-LMU für den Datensatz
-@pwesp für die grundlegende 3D Netzstruktur, welche wir abänderten
+## Acknowledgment
+Thanks to LMU for the dataset
